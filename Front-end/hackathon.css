@@ -20,6 +20,7 @@ body{
 .navbar{
     background-color: #135364;
     padding: 10px;
+    
 }
 .navbar-logo {
   color: #fff;
@@ -32,6 +33,9 @@ body{
     text-align: center;
     margin-top: 100px;
     height: 31em;
+    min-height: calc(100% - 80px); /* Ajustez cette valeur en fonction de la hauteur de votre header */
+    padding-bottom: 10px; 
+    
   }
 
   .button {
@@ -57,6 +61,8 @@ body{
     color: #fff;
     text-align: center;
     padding: 5px;
+    
+
 
   }
 
