@@ -21,35 +21,36 @@ def get_IP_NETMASK(interface):
 
     return IP_NETMASK
 
-# Obtenez le nom de l'interface réseau principale
-interface = netifaces.gateways()['default'][netifaces.AF_INET][1]
+def nmap_call():
+    # Obtenez le nom de l'interface réseau principale
+    interface = netifaces.gateways()['default'][netifaces.AF_INET][1]
 
-# Obtenez l'adresse IP et le Netmask et stockez-les dans la variable IP_NETMASK
-IP_NETMASK = get_IP_NETMASK(interface)
+    # Obtenez l'adresse IP et le Netmask et stockez-les dans la variable IP_NETMASK
+    IP_NETMASK = get_IP_NETMASK(interface)
 
-print(IP_NETMASK)
+    print(IP_NETMASK)
 
-# Commande Nmap à exécuter
-command = f"nmap -F -oX {XML_PATH} {IP_NETMASK}"
+    # Commande Nmap à exécuter
+    command = f"nmap -F -oX {XML_PATH} {IP_NETMASK}"
 
-# Exécution de la commande
-process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Exécution de la commande
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-# Récupération de la sortie et des erreurs
-output, error = process.communicate()
+    # Récupération de la sortie et des erreurs
+    output, error = process.communicate()
 
-# Vérification du code de sortie
-if process.returncode == 0:
-    print("Analyse Nmap terminée avec succès.")
-    print("Résultats :")
-    print(output.decode('utf-8'))
-else:
-    print("Une erreur s'est produite lors de l'exécution de la commande Nmap :")
-    print(error.decode('utf-8'))
+    # Vérification du code de sortie
+    if process.returncode == 0:
+        print("Analyse Nmap terminée avec succès.")
+        print("Résultats :")
+        print(output.decode('utf-8'))
+    else:
+        print("Une erreur s'est produite lors de l'exécution de la commande Nmap :")
+        print(error.decode('utf-8'))
 
-with open('/home/cyberbox/data/nmapscan.xml') as xml_file:
-    data_dict = xmltodict.parse(xml_file.read())
-    json_data = json.dumps(data_dict, indent=4)
+    with open('/home/cyberbox/data/nmapscan.xml') as xml_file:
+        data_dict = xmltodict.parse(xml_file.read())
+        return  json.dumps(data_dict, indent=4)
 
-with open('outputnmapscan.json', 'w') as json_file:
-    json_file.write(json_data)
+    # with open('outputnmapscan.json', 'w') as json_file:
+    #     json_file.write(json_data)

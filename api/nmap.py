@@ -1,20 +1,37 @@
-import subprocess
 import socket
-XML_PATH = "../log/scan-hackathon.xml"
+import netifaces
+import subprocess
+import xmltodict
+import json
 
+XML_PATH = "/home/cyberbox/data/nmapscan.xml"
 
+def get_IP_NETMASK(interface):
+    # Obtenez l'adresse IP
+    ip = netifaces.ifaddresses(interface)[netifaces.AF_INET][0]['addr']
 
-def nmap_call ():
-    # Obtenir l'adresse IP de la machine
-    ip_address = socket.gethostbyname(socket.gethostname())
-    print("Adresse IP de la machine :", ip_address)
+    # Obtenez le Netmask
+    netmask = netifaces.ifaddresses(interface)[netifaces.AF_INET][0]['netmask']
 
-    # Obtenir le sous-réseau de l'adresse IP
-    subnet = '.'.join(ip_address.split('.')[:3]) + '.0/24'
-    print("Analyse du réseau !")
+    # Conversion du Netmask en format CIDR
+    netmask = sum(bin(int(x)).count('1') for x in netmask.split('.'))
+
+    # Concaténation de l'adresse IP et du Netmask
+    IP_NETMASK = ip + '/' + str(netmask)
+
+    return IP_NETMASK
+
+def nmap_call():
+    # Obtenez le nom de l'interface réseau principale
+    interface = netifaces.gateways()['default'][netifaces.AF_INET][1]
+
+    # Obtenez l'adresse IP et le Netmask et stockez-les dans la variable IP_NETMASK
+    IP_NETMASK = get_IP_NETMASK(interface)
+
+    print(IP_NETMASK)
 
     # Commande Nmap à exécuter
-    command = f"nmap -F -oX {XML_PATH} {subnet}"
+    command = f"nmap -F -oX {XML_PATH} {IP_NETMASK}"
 
     # Exécution de la commande
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -30,3 +47,12 @@ def nmap_call ():
     else:
         print("Une erreur s'est produite lors de l'exécution de la commande Nmap :")
         print(error.decode('utf-8'))
+        return []
+
+    with open('/home/cyberbox/data/nmapscan.xml') as xml_file:
+        data_dict = xmltodict.parse(xml_file.read())
+        return        json_data = json.dumps(data_dict, indent=4)
+
+    return []
+    # with open('outputnmapscan.json', 'w') as json_file:
+    #     json_file.write(json_data)

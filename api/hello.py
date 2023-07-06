@@ -1,14 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
 from nmap import nmap_call
-
+from elastic import persist_data
 app = Flask(__name__)
 cors = CORS(app)
 
 @app.route("/nmap")
 def nmap():
     print("nmap")
-    nmap_call()
+    data = nmap_call()
+    persist_data(data)
     return "<p>nmap!</p>"
 
 
