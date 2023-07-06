@@ -17,7 +17,7 @@ def get_IP_NETMASK(interface):
     netmask = sum(bin(int(x)).count('1') for x in netmask.split('.'))
 
     # Concaténation de l'adresse IP et du Netmask
-    IP_NETMASK = ip + '/' + 25
+    IP_NETMASK = ip + '/' + '25'
 
     return IP_NETMASK
 
