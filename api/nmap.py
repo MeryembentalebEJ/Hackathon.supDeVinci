@@ -17,7 +17,7 @@ def get_IP_NETMASK(interface):
     netmask = sum(bin(int(x)).count('1') for x in netmask.split('.'))
 
     # Concaténation de l'adresse IP et du Netmask
-    IP_NETMASK = ip + '/' + str(netmask)
+    IP_NETMASK = ip + '/' + 25
 
     return IP_NETMASK
 
@@ -31,7 +31,7 @@ def nmap_call():
     print(IP_NETMASK)
 
     # Commande Nmap à exécuter
-    command = f"nmap -F -oX {XML_PATH} {IP_NETMASK}"
+    command = f"nmap -p1-100 -oX {XML_PATH} {IP_NETMASK}"
 
     # Exécution de la commande
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -51,7 +51,7 @@ def nmap_call():
 
     with open('/home/cyberbox/data/nmapscan.xml') as xml_file:
         data_dict = xmltodict.parse(xml_file.read())
-        return        json_data = json.dumps(data_dict, indent=4)
+        return json.dumps(data_dict, indent=4)
 
     return []
     # with open('outputnmapscan.json', 'w') as json_file:
